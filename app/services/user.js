@@ -1,6 +1,5 @@
 import dateFormat from 'dateformat'
 import User from '../models/m_user'
-import LogSignin from '../models/m_logSignin'
 import { hashSync } from 'bcrypt-nodejs'
 
 export function getUser () {
@@ -16,7 +15,7 @@ export function getUser () {
             username: u.username,
             firstname: u.firstname,
             lastname: u.lastname,
-            company: u.company,
+            department: u.department,
             created_dt: u.created_date,
             modified_dt: u.updated_date
           })
@@ -27,30 +26,32 @@ export function getUser () {
   })
 }
 
-export function addLogSignin (value) {
+export function deleteUser (username) {
   return new Promise((resolve, reject) => {
-    var logSignin = new LogSignin(value)
-    logSignin.save((err) => {
+    User.deleteOne({ 'username': username }, (err) => {
       if (err) {
         return reject(err)
       } else {
-        var result = {
+        return resolve({
           status: 'SUCCESS',
-          desc: `Logged in at ${value.log_dt}`
-        }
-        resolve(result)
+          desc: `User ${username} has been deleted at ${dateFormat(Date.now(), 'yyyy-mm-dd HH:MM:ss')}`
+        })
       }
     })
   })
 }
 
-export function updateLogSignin (id, data) {
+export function updateUser (username, data) {
   return new Promise((resolve, reject) => {
-    LogSignin.findOneAndUpdate({ '_id': id }, data, { upsert: false }, (err, doc) => {
+    User.findOneAndUpdate({ 'username': username }, data, { upsert: false }, (err, doc) => {
       if (err) {
         reject(err)
       } else {
-        resolve(doc)
+        var result = {
+          status: 'SUCCESS',
+          data: doc
+        }
+        resolve(result)
       }
     })
   })
@@ -73,7 +74,7 @@ export function newUser (value) {
         user.password = user.generateHash(value.password)
         user.firstname = value.firstname
         user.lastname = value.lastname
-        user.company = value.company
+        user.department = value.department
         user.role_id = value.role_id
         user.created_date = date
         user.updated_date = date

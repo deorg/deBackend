@@ -6,7 +6,7 @@ var userSchema = mongoose.Schema({
   password: String,
   firstname: String,
   lastname: String,
-  company: String,
+  department: String,
   role_id: { type: Number, default: 2 },
   created_date: Date,
   updated_date: Date,
