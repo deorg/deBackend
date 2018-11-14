@@ -2,7 +2,7 @@ import { createUser, getAllUser, updateUserData, deleteUser, signInUser } from '
 
 module.exports = function (app, passport) {
 //   const basicAuth = passport.authenticate('basic-auth', { session: false })
-//   const jwtAuth = passport.authenticate('jwt-auth', { session: false })
+  // const jwtAuth = passport.authenticate('jwt-auth', { session: false })
   const localAuth = passport.authenticate('local-login', { session: false })
 
   app.get('/', function (req, res) {
@@ -10,7 +10,7 @@ module.exports = function (app, passport) {
   })
 
   // #region API for Authorization
-  app.post('api/client/signin', localAuth, signInUser)
+  app.post('/api/client/signin', localAuth, signInUser)
   // #endregion
 
   // #region API for User Management
