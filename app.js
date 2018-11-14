@@ -30,7 +30,7 @@ app.use(cors())
 mongoose.set('debug', true)
 mongoose.Promise = global.Promise
 
-export const database = mongoose.connect(constant.database.test.url, constant.database.test.userDB)
+export const database = mongoose.connect(constant.database.mongo.test.url, constant.database.mongo.test.userDB)
 export const basePath = __dirname
 
 _passport(passport) // pass passport for configuration
