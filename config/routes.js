@@ -1,5 +1,5 @@
 import { createUser, getAllUser, updateUserData, deleteUser, signInUser } from '../app/controllers/authorization'
-
+import { getAllBranch, getSaleInfo } from '../app/controllers/information'
 module.exports = function (app, passport) {
 //   const basicAuth = passport.authenticate('basic-auth', { session: false })
   // const jwtAuth = passport.authenticate('jwt-auth', { session: false })
@@ -21,6 +21,8 @@ module.exports = function (app, passport) {
   // #endregion
 
   // #region API for get Information
+  app.get('/api/information/getBranch', getAllBranch)
+  app.get('/api/information/getSaleInfo', getSaleInfo)
   //   app.get('/data',function (req, res) {
   //     let sqlstatement = `SELECT * from tab`;
   //     oracleExecute(sqlstatement, res);

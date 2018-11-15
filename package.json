@@ -31,6 +31,7 @@
     "nodemailer-smtp-transport": "^2.5.0",
     "nodemon": "latest",
     "numeral": "latest",
+    "oracledb": "^3.0.0",
     "passport": "latest",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",
