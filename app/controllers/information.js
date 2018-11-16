@@ -1,7 +1,8 @@
-import { getBranch, getSaleInfo as getSale } from '../services/report'
+import { getBranch, getSaleInfo as getSale, getMonthlyMeeting as getMonthly } from '../services/report'
 
 export function getAllBranch (req, res, next) {
   getBranch(req.query.branch_id).then((resBrh) => {
+    console.log('--------------------------------------------------')
     console.log(resBrh)
     res.send(resBrh)
   }).catch((err) => {
@@ -12,8 +13,20 @@ export function getAllBranch (req, res, next) {
   })
 }
 
+export function getMonthlyMeeting (req, res, next) {
+  getMonthly().then((resMonthly) => {
+    console.log(resMonthly)
+    res.send(resMonthly)
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+
 export function getSaleInfo (req, res, next) {
-  getSale(req.query.branch_id).then((resSale) => {
+  getSale().then((resSale) => {
     console.log(resSale)
     res.send(resSale)
   }).catch((err) => {
