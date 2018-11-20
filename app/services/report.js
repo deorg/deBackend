@@ -66,6 +66,7 @@ export function getSaleInfo () {
       SUM(TAR_SALE_AMT) TAR_AMT,
       SUM(SALE_AMT) SALE_AMT,
       SUM(PAY_AMT) PAY_AMT,
+      SUM(SALE_AMT) - SUM(TAR_SALE_AMT) DIF_TAR_AMT,
       PSA.FBRH_SUM(BRH_ID, 'PDO', TRUNC(SYSDATE,'YY'), TRUNC(SYSDATE,'MM')-1)  PDO_AMT
       
       FROM SA010V
