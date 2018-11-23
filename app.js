@@ -41,7 +41,7 @@ app.use(cookieParser()) // read cookies (needed for auth)
 // app.use(bodyParser()) // get information from html forms
 
 // view engine setup
-// app.use(express.static(path.join(basePath, 'public')))
+// app.use(express.static(path.join(basePath, 'public/dist/deweb')))
 // app.set('views', path.join(__dirname, 'app/views'));
 // app.set('view engine', 'ejs');
 
@@ -63,6 +63,9 @@ router(app, passport) // load our routes and pass in our app and fully configure
 
 // launch ======================================================================
 app.listen(port)
+// app.get('/*', (req, res) => {
+//   res.sendFile(path.join(__dirname))
+// })
 console.log('Server started on port ' + port)
 
 // catch 404 and forward to error handler

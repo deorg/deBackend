@@ -76,7 +76,8 @@ export function getSaleInfo () {
      
       GROUP BY BRH_ID
       ORDER BY BRH_ID`
-      oracleExecute(sqlstatement).then((resSale) => {
+      let header = ['เป้าการขาย', 'ยอดขาย', 'ยอดเก็บ', 'ขาด/เกิน', 'PDO']
+      oracleExecute(sqlstatement, header).then((resSale) => {
         console.log(resSale)
         resolve(resSale)
       })
@@ -86,7 +87,7 @@ export function getSaleInfo () {
   })
 }
 
-function oracleExecute (sqlstatement) {
+function oracleExecute (sqlstatement, header) {
   return new Promise((resolve, reject) => {
     oracledb.getConnection(constants.database.oracle.production, (err, connection) => {
       if (err) return reject(err)
@@ -97,6 +98,7 @@ function oracleExecute (sqlstatement) {
             connection.close()
             return resolve({
               status: 'SUCCESS',
+              header: header,
               data: result.rows
             })
           }
