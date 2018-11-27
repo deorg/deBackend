@@ -10,6 +10,7 @@ import session from 'express-session'
 import router from './config/routes'
 import _passport from './config/passport'
 import cors from 'cors'
+import path from 'path'
 
 var port = process.env.PORT || 8042
 var app = express()
@@ -41,7 +42,8 @@ app.use(cookieParser()) // read cookies (needed for auth)
 // app.use(bodyParser()) // get information from html forms
 
 // view engine setup
-// app.use(express.static(path.join(basePath, 'public/dist/deweb')))
+app.use(express.static(path.join(basePath, 'public')))
+console.log(basePath)
 // app.set('views', path.join(__dirname, 'app/views'));
 // app.set('view engine', 'ejs');
 

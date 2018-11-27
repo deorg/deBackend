@@ -1,5 +1,6 @@
 import { createUser, getAllUser, updateUserData, deleteUser, signInUser } from '../app/controllers/authorization'
 import { getAllBranch, getSaleInfo, getMonthlyMeeting } from '../app/controllers/information'
+import { createNews, getNews, newCatetory, getCategory, deleteNews } from '../app/controllers/newsController'
 module.exports = function (app, passport) {
 //   const basicAuth = passport.authenticate('basic-auth', { session: false })
   // const jwtAuth = passport.authenticate('jwt-auth', { session: false })
@@ -20,10 +21,19 @@ module.exports = function (app, passport) {
   app.delete('/api/user/deleteUser', deleteUser)
   // #endregion
 
+  // #region News mangement
+  app.post('/api/news/createNews', createNews)
+  app.get('/api/news/getNews', getNews)
+  app.post('/api/news/newCategory', newCatetory)
+  app.get('/api/news/getCategory', getCategory)
+  app.post('/api/news/deleteNews', deleteNews)
+  // #endregion
+
   // #region API for get Information
   app.get('/api/information/getBranch', getAllBranch)
   app.get('/api/information/getSaleInfo', getSaleInfo)
   app.get('/api/information/getMonthlyMeeting', getMonthlyMeeting)
+
   //   app.get('/data',function (req, res) {
   //     let sqlstatement = `SELECT * from tab`;
   //     oracleExecute(sqlstatement, res);
