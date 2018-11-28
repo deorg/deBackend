@@ -1,5 +1,5 @@
 import { createNews as newNews, getNews as getNew, addCategory, getCate, deleteNews as delNews,
-  deleteImg as delImg } from '../services/news'
+  deleteImg as delImg, updateNews } from '../services/news'
 
 export function newCatetory (req, res, next) {
   addCategory(req.body).then((resCate) => {
@@ -37,6 +37,36 @@ export function getCategory (req, res, next) {
       status: 'SUCCESS',
       data: resCate
     })
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+
+export function editNews (req, res, next) {
+  // console.log(req.body.id)
+  // console.log(req.body.title)
+  // console.log(req.body.category)
+  // console.log(req.body.startDate)
+  // console.log(req.body.endDate)
+  // console.log(req.body.imageName)
+  // console.log(req.body.image)
+  // res.status(200).send({
+  //   status: 'SUCCESS',
+  //   desc: 'complete'
+  // })
+  let update = {
+    title: req.body.title,
+    content: req.body.content,
+    category: req.body.category,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    creator: 'admin'
+  }
+  updateNews(req.body.id, update, req.body.imageName, req.body.image).then((resUpdate) => {
+    res.send(resUpdate)
   }).catch((err) => {
     res.status(500).json({
       status: 'FAILURE',

@@ -1,6 +1,6 @@
 import { createUser, getAllUser, updateUserData, deleteUser, signInUser } from '../app/controllers/authorization'
 import { getAllBranch, getSaleInfo, getMonthlyMeeting } from '../app/controllers/information'
-import { createNews, getNews, newCatetory, getCategory, deleteNews, deleteImg } from '../app/controllers/newsController'
+import { createNews, getNews, newCatetory, getCategory, deleteNews, deleteImg, editNews } from '../app/controllers/newsController'
 module.exports = function (app, passport) {
 //   const basicAuth = passport.authenticate('basic-auth', { session: false })
   // const jwtAuth = passport.authenticate('jwt-auth', { session: false })
@@ -28,6 +28,7 @@ module.exports = function (app, passport) {
   app.get('/api/news/getCategory', getCategory)
   app.post('/api/news/deleteNews', deleteNews)
   app.get('/api/news/deleteImg', deleteImg)
+  app.post('/api/news/editNews', editNews)
   // #endregion
 
   // #region API for get Information

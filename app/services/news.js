@@ -69,7 +69,7 @@ export function getNews () {
             content: u.content,
             category: u.category,
             startDate: u.startDate,
-            endDated: u.endDate,
+            endDate: u.endDate,
             image: u.image,
             created_date: u.created_date,
             creator: u.creator
@@ -104,17 +104,34 @@ export function deleteNews (_id) {
   })
 }
 
-export function updateNews (_id, data) {
+export function updateNews (_id, data, imageName, image) {
   return new Promise((resolve, reject) => {
     News.findOneAndUpdate({ '_id': _id }, data, { upsert: false }, (err, doc) => {
       if (err) {
         reject(err)
       } else {
-        var result = {
-          status: 'SUCCESS',
-          data: doc
+        if (imageName != null && image != null) {
+          fs.unlink(path.join(basePath, '/public/img/', imageName), (err) => {
+            if (err) throw err
+
+            var base64Data = image.replace(/^data:image\/(png|gif|jpeg);base64,/, '')
+            fs.writeFile(path.join(basePath, '/public/img/', imageName), base64Data, 'base64', (errr) => {
+              if (errr) throw errr
+
+              var result = {
+                status: 'SUCCESS',
+                data: doc
+              }
+              resolve(result)
+            })
+          })
+        } else {
+          var result = {
+            status: 'SUCCESS',
+            data: doc
+          }
+          resolve(result)
         }
-        resolve(result)
       }
     })
   })
