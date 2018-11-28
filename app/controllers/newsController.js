@@ -1,4 +1,5 @@
-import { createNews as newNews, getNews as getNew, addCategory, getCate, deleteNews as delNews } from '../services/news'
+import { createNews as newNews, getNews as getNew, addCategory, getCate, deleteNews as delNews,
+  deleteImg as delImg } from '../services/news'
 
 export function newCatetory (req, res, next) {
   addCategory(req.body).then((resCate) => {
@@ -6,6 +7,21 @@ export function newCatetory (req, res, next) {
       res.send(resCate)
     } else {
       res.send(400).json(resCate)
+    }
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+
+export function deleteImg (req, res, next) {
+  delImg(req.query.name).then((resDel) => {
+    if (resDel.status === 'SUCCESS') {
+      res.send(resDel)
+    } else {
+      res.send(400).json(resDel)
     }
   }).catch((err) => {
     res.status(500).json({
@@ -72,4 +88,3 @@ export function getNews (req, res, next) {
     })
   })
 }
-

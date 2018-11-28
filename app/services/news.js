@@ -21,6 +21,20 @@ export function uploadImg (name, data) {
   })
 }
 
+export function deleteImg (name) {
+  return new Promise((resolve, reject) => {
+    fs.unlink(path.join(basePath, '/public/img/', name), (err) => {
+      if (err) throw err
+
+      let result = {
+        status: 'SUCCESS',
+        desc: name + ' was deleted'
+      }
+      return resolve(result)
+    })
+  })
+}
+
 export function getCate () {
   return new Promise((resolve, reject) => {
     Category.find({}, (err, cate) => {
@@ -69,13 +83,21 @@ export function getNews () {
 
 export function deleteNews (_id) {
   return new Promise((resolve, reject) => {
-    News.deleteOne({ '_id': _id }, (err) => {
-      if (err) {
-        return reject(err)
-      } else {
-        return resolve({
-          status: 'SUCCESS',
-          desc: `News ${_id} has been deleted at ${dateFormat(Date.now(), 'yyyy-mm-dd HH:MM:ss')}`
+    News.findOne({ '_id': _id }, (error, news) => {
+      if (error) {
+        return reject(error)
+      }
+      if (news) {
+        fs.unlinkSync(path.join(basePath, '/public/img/', news.image))
+        News.deleteOne({ '_id': _id }, (err) => {
+          if (err) {
+            return reject(err)
+          } else {
+            return resolve({
+              status: 'SUCCESS',
+              desc: `News ${_id} has been deleted at ${dateFormat(Date.now(), 'yyyy-mm-dd HH:MM:ss')}`
+            })
+          }
         })
       }
     })
