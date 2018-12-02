@@ -19,6 +19,7 @@
     "express-mailer": "^0.3.0",
     "express-session": "latest",
     "fs-extra": "latest",
+    "fs-path": "0.0.24",
     "guid": "0.0.12",
     "http-proxy": "latest",
     "md5": "latest",

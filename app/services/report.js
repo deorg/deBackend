@@ -17,7 +17,7 @@ export function getBranch (brhId) {
   })
 }
 
-export function getMonthlyMeeting () {
+export function getMonthlyMeeting (startDate, endDate) {
   return new Promise((resolve, reject) => {
     try {
       let sqlstatement = `SELECT
@@ -27,10 +27,10 @@ export function getMonthlyMeeting () {
       
       SUM(SALE_AMT) - SUM(TAR_SALE_AMT) DIF_TAR_AMT,
          
-      PSA.FBRH_SUM(BRH_ID, 'SALE', TRUNC(MDATE,'YY'), TRUNC(SYSDATE,'MM')-1) ACC_SALE_AMT,
-      PSA.FBRH_SUM(BRH_ID, 'PAY', TRUNC(MDATE,'YY'), TRUNC(SYSDATE,'MM')-1) ACC_PAY_AMT,
-      PSA.FBRH_SUM(BRH_ID, 'TAR', TRUNC(MDATE,'YY'), TRUNC(SYSDATE,'MM')-1) ACC_TAR_AMT,
-      PSA.FBRH_SUM(BRH_ID, 'TAR', MDATE, TRUNC(SYSDATE,'MM')-1) TAR_AMT,  
+      PSA.FBRH_SUM(BRH_ID, 'SALE', TRUNC(MDATE,'YY'), MAX(DDATE)) ACC_SALE_AMT,
+      PSA.FBRH_SUM(BRH_ID, 'PAY', TRUNC(MDATE,'YY'), MAX(DDATE)) ACC_PAY_AMT,
+      PSA.FBRH_SUM(BRH_ID, 'TAR', TRUNC(MDATE,'YY'), MAX(DDATE)) ACC_TAR_AMT,
+      PSA.FBRH_SUM(BRH_ID, 'TAR', MIN(DDATE), MAX(DDATE)) TAR_AMT,  
 
       SUM(PDO_LOSS_GAIN) LOS_PDO_AMT,
       SUM(PDO_AMT) PDO_AMT,
@@ -42,13 +42,12 @@ export function getMonthlyMeeting () {
       
       FROM SA010V
       WHERE BRH_ID LIKE '%'
-      AND MDATE = TRUNC(SYSDATE-30,'MM')
+      AND MDATE BETWEEN TRUNC(TO_DATE('${startDate}','DD/MM/RRRR'),'MM') AND TRUNC(TO_DATE('${endDate}','DD/MM/RRRR'),'MM')
       AND BRH_ID < 66
      
       GROUP BY BRH_ID, MDATE
       ORDER BY BRH_ID`
       oracleExecute(sqlstatement).then((resMonthly) => {
-        console.log('--------- inside get resMonthly -------------------------')
         console.log(resMonthly)
         resolve(resMonthly)
       })
@@ -58,7 +57,75 @@ export function getMonthlyMeeting () {
   })
 }
 
-export function getSaleInfo () {
+// export function getPathSaleInfo (brh, startDate, endDate) {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       let sqlstatement = `SELECT
+//       BRH_ID,
+//       PATH_NO,
+//       SUM(TAR_SALE_AMT) TAR_AMT,
+//       SUM(SALE_AMT) SALE_AMT,
+//       SUM(PAY_AMT) PAY_AMT,
+//       SUM(SALE_AMT) - SUM(TAR_SALE_AMT) DIF_TAR_AMT,
+//       PSA.FBRH_PATH_SUM(BRH_ID, PATH_NO, 'PDO', MIN(DDATE), MAX(DDATE))  PDO_AMT
+
+//       FROM SA010V
+//       WHERE BRH_ID = '${brh}'
+//       AND MDATE BETWEEN TRUNC(TO_DATE('${startDate}','DD-MM-RRRR'),'MM') AND TRUNC(TO_DATE('${endDate}','DD-MM-RRRR'),'MM')
+//       AND BRH_ID < 66
+
+//       GROUP BY BRH_ID, PATH_NO
+//       ORDER BY BRH_ID, PATH_NO`
+//       // AND DDATE BETWEEN TRUNC(SYSDATE,'YY') AND TRUNC(SYSDATE,'MM')-1
+//       let header = ['เป้าการขาย', 'ยอดขาย', 'ยอดเก็บ', 'ขาด/เกิน', 'PDO']
+//       oracleExecute(sqlstatement, header).then((resSale) => {
+//         console.log(resSale)
+//         resolve(resSale)
+//       })
+//     } catch (err) {
+//       reject(err)
+//     }
+//   })
+// }
+
+export function getPathSaleInfo (brh, startDate, endDate) {
+  console.log(startDate)
+  console.log(endDate)
+  return new Promise((resolve, reject) => {
+    try {
+      let sqlstatement = `SELECT
+      BRH_ID,
+      PATH_NO,
+      PMAS.PATH_NAME(BRH_ID, PATH_NO) PATH_NAME,
+      
+      SUM(TAR_SALE_AMT) TAR_AMT,
+      SUM(SALE_AMT) SALE_AMT,
+      SUM(PAY_AMT) PAY_AMT,
+      
+      SUM(SALE_AMT) - SUM(TAR_SALE_AMT) DIF_TAR_AMT,
+      PSA.FBRH_PATH_SUM(BRH_ID, PATH_NO, 'PDO', MIN(DDATE), MAX(DDATE))  PDO_AMT
+  
+      FROM  SA010V
+      WHERE /*BRH_ID = ${brh}
+      AND*/ MDATE BETWEEN TRUNC(TO_DATE('${startDate}','DD/MM/RRRR'),'MM') AND TRUNC(TO_DATE('${endDate}','DD/MM/RRRR'),'MM')
+      AND BRH_ID < 66
+      GROUP BY BRH_ID, PATH_NO
+      ORDER BY BRH_ID`
+      // AND DDATE BETWEEN TRUNC(SYSDATE,'YY') AND TRUNC(SYSDATE,'MM')-1
+      let header = ['เป้าการขาย', 'ยอดขาย', 'ยอดเก็บ', 'ขาด/เกิน', 'PDO']
+      oracleExecute(sqlstatement, header).then((resSale) => {
+        console.log(resSale)
+        resolve(resSale)
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+export function getSaleInfo (startDate, endDate) {
+  console.log(startDate)
+  console.log(endDate)
   return new Promise((resolve, reject) => {
     try {
       let sqlstatement = `SELECT
@@ -67,15 +134,16 @@ export function getSaleInfo () {
       SUM(SALE_AMT) SALE_AMT,
       SUM(PAY_AMT) PAY_AMT,
       SUM(SALE_AMT) - SUM(TAR_SALE_AMT) DIF_TAR_AMT,
-      PSA.FBRH_SUM(BRH_ID, 'PDO', TRUNC(SYSDATE,'YY'), TRUNC(SYSDATE,'MM')-1)  PDO_AMT
+      PSA.FBRH_SUM(BRH_ID, 'PDO', MIN(DDATE), MAX(DDATE))  PDO_AMT
       
       FROM SA010V
       WHERE BRH_ID LIKE '%'
-      AND DDATE BETWEEN TRUNC(SYSDATE,'YY') AND TRUNC(SYSDATE,'MM')-1
+      AND MDATE BETWEEN TRUNC(TO_DATE('${startDate}','DD-MM-RRRR'),'MM') AND TRUNC(TO_DATE('${endDate}','DD-MM-RRRR'),'MM')
       AND BRH_ID < 66
      
       GROUP BY BRH_ID
       ORDER BY BRH_ID`
+      // AND DDATE BETWEEN TRUNC(SYSDATE,'YY') AND TRUNC(SYSDATE,'MM')-1
       let header = ['เป้าการขาย', 'ยอดขาย', 'ยอดเก็บ', 'ขาด/เกิน', 'PDO']
       oracleExecute(sqlstatement, header).then((resSale) => {
         console.log(resSale)
