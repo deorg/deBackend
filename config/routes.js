@@ -7,9 +7,9 @@ module.exports = function (app, passport) {
   // const jwtAuth = passport.authenticate('jwt-auth', { session: false })
   const localAuth = passport.authenticate('local-login', { session: false })
 
-  // app.get('/', function (req, res) {
-  //   res.send('Server started')
-  // })
+  app.get('/', function (req, res) {
+    res.send('Server started')
+  })
 
   // #region API for Authorization
   app.post('/api/client/signin', localAuth, signInUser)

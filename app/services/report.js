@@ -103,7 +103,7 @@ export function getPathSaleInfo (brh, startDate, endDate) {
       SUM(PAY_AMT) PAY_AMT,
       
       SUM(SALE_AMT) - SUM(TAR_SALE_AMT) DIF_TAR_AMT,
-      PSA.FBRH_PATH_SUM(BRH_ID, PATH_NO, 'PDO', MIN(DDATE), MAX(DDATE))  PDO_AMT
+      SUM(PDO_LOSS_GAIN) PDO_LOSS_GAIN
   
       FROM  SA010V
       WHERE /*BRH_ID = ${brh}
@@ -112,7 +112,7 @@ export function getPathSaleInfo (brh, startDate, endDate) {
       GROUP BY BRH_ID, PATH_NO
       ORDER BY BRH_ID`
       // AND DDATE BETWEEN TRUNC(SYSDATE,'YY') AND TRUNC(SYSDATE,'MM')-1
-      let header = ['เป้าการขาย', 'ยอดขาย', 'ยอดเก็บ', 'ขาด/เกิน', 'PDO']
+      let header = ['เป้าการขาย', 'ยอดขาย', 'ยอดเก็บ', 'ขาด/เกิน', 'PDO เพิ่ม/ลด']
       oracleExecute(sqlstatement, header).then((resSale) => {
         console.log(resSale)
         resolve(resSale)
@@ -130,11 +130,11 @@ export function getSaleInfo (startDate, endDate) {
     try {
       let sqlstatement = `SELECT
       BRH_ID,
-      SUM(TAR_SALE_AMT) TAR_AMT,
+      PSA.FBRH_SUM(BRH_ID, 'TAR', MIN(DDATE), MAX(DDATE)) TAR_AMT,
       SUM(SALE_AMT) SALE_AMT,
       SUM(PAY_AMT) PAY_AMT,
       SUM(SALE_AMT) - SUM(TAR_SALE_AMT) DIF_TAR_AMT,
-      PSA.FBRH_SUM(BRH_ID, 'PDO', MIN(DDATE), MAX(DDATE))  PDO_AMT
+      SUM(PDO_LOSS_GAIN) PDO_LOSS_GAIN
       
       FROM SA010V
       WHERE BRH_ID LIKE '%'
@@ -144,7 +144,7 @@ export function getSaleInfo (startDate, endDate) {
       GROUP BY BRH_ID
       ORDER BY BRH_ID`
       // AND DDATE BETWEEN TRUNC(SYSDATE,'YY') AND TRUNC(SYSDATE,'MM')-1
-      let header = ['เป้าการขาย', 'ยอดขาย', 'ยอดเก็บ', 'ขาด/เกิน', 'PDO']
+      let header = ['เป้าการขาย', 'ยอดขาย', 'ยอดเก็บ', 'ขาด/เกิน', 'PDO เพิ่ม/ลด']
       oracleExecute(sqlstatement, header).then((resSale) => {
         console.log(resSale)
         resolve(resSale)
