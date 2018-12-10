@@ -25,12 +25,12 @@ export function getMonthlyMeeting (startDate, endDate) {
       SUM(SALE_AMT) SALE_AMT,
       SUM(PAY_AMT) PAY_AMT,
       
-      SUM(SALE_AMT) - SUM(TAR_SALE_AMT) DIF_TAR_AMT,
+      SUM(SALE_AMT) - PSA.FBRH_SUM(BRH_ID, 'TAR', MIN(MDATE), MAX(DDATE)) DIF_TAR_AMT,
          
       PSA.FBRH_SUM(BRH_ID, 'SALE', TRUNC(MDATE,'YY'), MAX(DDATE)) ACC_SALE_AMT,
       PSA.FBRH_SUM(BRH_ID, 'PAY', TRUNC(MDATE,'YY'), MAX(DDATE)) ACC_PAY_AMT,
       PSA.FBRH_SUM(BRH_ID, 'TAR', TRUNC(MDATE,'YY'), MAX(DDATE)) ACC_TAR_AMT,
-      PSA.FBRH_SUM(BRH_ID, 'TAR', MIN(DDATE), MAX(DDATE)) TAR_AMT,  
+      Nvl(PSA.FBRH_SUM(BRH_ID, 'TAR', MIN(MDATE), MAX(DDATE)), 0) TAR_AMT,  
 
       SUM(PDO_LOSS_GAIN) LOS_PDO_AMT,
       SUM(PDO_AMT) PDO_AMT,
@@ -130,15 +130,15 @@ export function getSaleInfo (startDate, endDate) {
     try {
       let sqlstatement = `SELECT
       BRH_ID,
-      PSA.FBRH_SUM(BRH_ID, 'TAR', MIN(DDATE), MAX(DDATE)) TAR_AMT,
+      PSA.FBRH_SUM(BRH_ID, 'TAR', MIN(MDATE), MAX(DDATE)) TAR_AMT,
       SUM(SALE_AMT) SALE_AMT,
       SUM(PAY_AMT) PAY_AMT,
-      SUM(SALE_AMT) - SUM(TAR_SALE_AMT) DIF_TAR_AMT,
+      SUM(SALE_AMT) - PSA.FBRH_SUM(BRH_ID, 'TAR', MIN(MDATE), MAX(DDATE)) DIF_TAR_AMT,
       SUM(PDO_LOSS_GAIN) PDO_LOSS_GAIN
       
       FROM SA010V
       WHERE BRH_ID LIKE '%'
-      AND MDATE BETWEEN TRUNC(TO_DATE('${startDate}','DD-MM-RRRR'),'MM') AND TRUNC(TO_DATE('${endDate}','DD-MM-RRRR'),'MM')
+      AND MDATE between TRUNC(TO_DATE('${startDate}','DD-MM-RRRR'),'MM') AND TRUNC(TO_DATE('${endDate}','DD-MM-RRRR'),'MM')
       AND BRH_ID < 66
      
       GROUP BY BRH_ID

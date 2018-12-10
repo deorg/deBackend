@@ -37,6 +37,8 @@ module.exports = function (app, passport) {
   app.get('/api/information/getSaleInfo', getSaleInfo)
   app.get('/api/information/getMonthlyMeeting', getMonthlyMeeting)
   app.get('/api/information/getPathInfo', getPathInfo)
+  app.get('api/information/summary/last5years')
+  app.get('api/information/summary/salePerYear')
   // #endregion
 
   // #region  Thumbnail
