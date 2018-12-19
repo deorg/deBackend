@@ -1,4 +1,5 @@
-import { getBranch, getSaleInfo as getSale, getMonthlyMeeting as getMonthly, getPathSaleInfo } from '../services/report'
+import { getBranch, getSaleInfo as getSale, getMonthlyMeeting as getMonthly, getPathSaleInfo, getSaleInfo2 as getSale2,
+  getPathSaleInfo2 } from '../services/report'
 
 export function getAllBranch (req, res, next) {
   getBranch(req.query.branch_id).then((resBrh) => {
@@ -38,8 +39,31 @@ export function getPathInfo (req, res, next) {
   })
 }
 
+export function getPathInfo2 (req, res, next) {
+  getPathSaleInfo2(req.query.branch_id, req.query.startDate, req.query.endDate, req.query.sort, req.query.filter).then((resSale) => {
+    res.send(resSale)
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+
 export function getSaleInfo (req, res, next) {
   getSale(req.query.startDate, req.query.endDate).then((resSale) => {
+    console.log(resSale)
+    res.send(resSale)
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+
+export function getSaleInfo2 (req, res, next) {
+  getSale2(req.query.startDate, req.query.endDate, req.query.sort, req.query.filter).then((resSale) => {
     console.log(resSale)
     res.send(resSale)
   }).catch((err) => {

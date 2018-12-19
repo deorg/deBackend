@@ -1,5 +1,5 @@
 import { createUser, getAllUser, updateUserData, deleteUser, signInUser } from '../app/controllers/authorization'
-import { getAllBranch, getSaleInfo, getMonthlyMeeting, getPathInfo } from '../app/controllers/information'
+import { getAllBranch, getSaleInfo, getMonthlyMeeting, getPathInfo, getSaleInfo2, getPathInfo2 } from '../app/controllers/information'
 import { createNews, getNews, newCatetory, getCategory, deleteNews, deleteImg, editNews } from '../app/controllers/newsController'
 import { newAlbum } from '../app/controllers/imageController'
 module.exports = function (app, passport) {
@@ -35,10 +35,12 @@ module.exports = function (app, passport) {
   // #region API for get Information
   app.get('/api/information/getBranch', getAllBranch)
   app.get('/api/information/getSaleInfo', getSaleInfo)
+  app.get('/api/information/getSaleInfo2', getSaleInfo2)
   app.get('/api/information/getMonthlyMeeting', getMonthlyMeeting)
   app.get('/api/information/getPathInfo', getPathInfo)
-  app.get('api/information/summary/last5years')
-  app.get('api/information/summary/salePerYear')
+  app.get('/api/information/getPathInfo2', getPathInfo2)
+  app.get('/api/information/summary/last5years')
+  app.get('/api/information/summary/salePerYear')
   // #endregion
 
   // #region  Thumbnail
