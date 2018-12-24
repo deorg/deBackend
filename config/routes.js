@@ -1,15 +1,12 @@
 import { createUser, getAllUser, updateUserData, deleteUser, signInUser } from '../app/controllers/authorization'
-import { getAllBranch, getSaleInfo, getMonthlyMeeting, getPathInfo, getSaleInfo2, getPathInfo2 } from '../app/controllers/information'
+import { getAllBranch, getSaleInfo, getMonthlyMeeting, getPathInfo, getSaleInfo2, getPathInfo2, getCustomter, getSms } from '../app/controllers/information'
 import { createNews, getNews, newCatetory, getCategory, deleteNews, deleteImg, editNews } from '../app/controllers/newsController'
-import { newAlbum } from '../app/controllers/imageController'
+// import { newAlbum } from '../app/controllers/imageController'
+
 module.exports = function (app, passport) {
 //   const basicAuth = passport.authenticate('basic-auth', { session: false })
   // const jwtAuth = passport.authenticate('jwt-auth', { session: false })
   const localAuth = passport.authenticate('local-login', { session: false })
-
-  app.get('/', function (req, res) {
-    res.send('Server started')
-  })
 
   // #region API for Authorization
   app.post('/api/client/signin', localAuth, signInUser)
@@ -43,6 +40,8 @@ module.exports = function (app, passport) {
   app.get('/api/information/summary/salePerYear')
   // #endregion
 
-  // #region  Thumbnail
-  app.post('/api/new/album', newAlbum)
+  // #region API for Mobile application //
+  app.get('/api/customer/profile', getCustomter)
+  app.get('/api/customer/sms', getSms)
+  // #endregion
 }

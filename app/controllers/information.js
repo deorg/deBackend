@@ -1,11 +1,32 @@
 import { getBranch, getSaleInfo as getSale, getMonthlyMeeting as getMonthly, getPathSaleInfo, getSaleInfo2 as getSale2,
-  getPathSaleInfo2 } from '../services/report'
+  getPathSaleInfo2, getCustomerProfile, getMessage } from '../services/report'
 
 export function getAllBranch (req, res, next) {
   getBranch(req.query.branch_id).then((resBrh) => {
     console.log('--------------------------------------------------')
     console.log(resBrh)
     res.send(resBrh)
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+
+export function getCustomter (req, res, next) {
+  getCustomerProfile(req.query.id).then((resCust) => {
+    res.send(resCust)
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+export function getSms (req, res, next) {
+  getMessage(req.query.id).then((resCust) => {
+    res.send(resCust)
   }).catch((err) => {
     res.status(500).json({
       status: 'FAILURE',

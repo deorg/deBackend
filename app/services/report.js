@@ -1,7 +1,9 @@
+/* eslint-disable indent */
+/* eslint-disable space-before-function-paren */
 import oracledb from 'oracledb'
 import constants from '../../config/constants'
 
-export function getBranch (brhId) {
+export function getBranch(brhId) {
   return new Promise((resolve, reject) => {
     try {
       console.log(`branchID = ${brhId}`)
@@ -17,7 +19,36 @@ export function getBranch (brhId) {
   })
 }
 
-export function getMonthlyMeeting (startDate, endDate) {
+export function getCustomerProfile(id) {
+  return new Promise((resolve, reject) => {
+    try {
+      let sql = `SELECT CUST_NO, CUST_FIRSTNAME||' '||CUST_LASTNAME CUST_NAME, CUST_CITIZEN_NO CITIZEN_NO, TEL_SMS TEL
+      FROM   CUSTOMER
+      WHERE  CUST_NO = ${id}`
+      oracleExecute(sql).then((resCust) => {
+        resolve(resCust)
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+export function getMessage(id) {
+  return new Promise((resolve, reject) => {
+    try {
+      let sql = `SELECT SMS010_PK, CON_NO, NOTE SMS_NOTE, CREATED_TIME SMS_TIME
+      FROM   SMS010
+      WHERE  CUST_NO = ${id} AND CREATED_TIME > TRUNC(SYSDATE,'YY')`
+      oracleExecute(sql).then((resSms) => {
+        resolve(resSms)
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+export function getMonthlyMeeting(startDate, endDate) {
   return new Promise((resolve, reject) => {
     try {
       let sqlstatement = `SELECT
@@ -88,7 +119,7 @@ export function getMonthlyMeeting (startDate, endDate) {
 //   })
 // }
 
-export function getPathSaleInfo (brh, startDate, endDate) {
+export function getPathSaleInfo(brh, startDate, endDate) {
   console.log(startDate)
   console.log(endDate)
   return new Promise((resolve, reject) => {
@@ -122,7 +153,7 @@ export function getPathSaleInfo (brh, startDate, endDate) {
   })
 }
 
-export function getSaleInfo (startDate, endDate) {
+export function getSaleInfo(startDate, endDate) {
   console.log(startDate)
   console.log(endDate)
   return new Promise((resolve, reject) => {
@@ -154,18 +185,18 @@ export function getSaleInfo (startDate, endDate) {
   })
 }
 
-export function getSaleInfo2 (startDate, endDate, sort = 'สาขา', filter = []) {
+export function getSaleInfo2(startDate, endDate, sort = 'สาขา', filter = []) {
   sort = sort === '%' ? 'สาขา' : sort
   var slice = filter.split(',')
   console.log(startDate)
   console.log(endDate)
   console.log(slice)
   const sortOption = [{ columnName: 'สาขา', column: 'BRH_ID' },
-    { columnName: 'เป้าการขาย', column: 'TAR_AMT' },
-    { columnName: 'ยอดขาย', column: 'SALE_AMT' },
-    { columnName: 'ยอดเก็บ', column: 'PAY_AMT' },
-    { columnName: 'ขาด/เกิน', column: 'DIF_TAR_AMT' },
-    { columnName: 'PDO เพิ่ม/ลด', column: 'PDO_LOSS_GAIN' }]
+  { columnName: 'เป้าการขาย', column: 'TAR_AMT' },
+  { columnName: 'ยอดขาย', column: 'SALE_AMT' },
+  { columnName: 'ยอดเก็บ', column: 'PAY_AMT' },
+  { columnName: 'ขาด/เกิน', column: 'DIF_TAR_AMT' },
+  { columnName: 'PDO เพิ่ม/ลด', column: 'PDO_LOSS_GAIN' }]
   const orderBy = sortOption.filter(obj => obj.columnName === sort)[0]
   return new Promise((resolve, reject) => {
     try {
@@ -249,18 +280,18 @@ export function getSaleInfo2 (startDate, endDate, sort = 'สาขา', filter 
   })
 }
 
-export function getPathSaleInfo2 (brh, startDate, endDate, sort = 'สายบริการ', filter = []) {
+export function getPathSaleInfo2(brh, startDate, endDate, sort = 'สายบริการ', filter = []) {
   sort = sort === '%' ? 'สายบริการ' : sort
   var slice = filter.split(',')
   console.log(startDate)
   console.log(endDate)
   console.log(slice)
   const sortOption = [{ columnName: 'สายบริการ', column: 'PATH_NO' },
-    { columnName: 'เป้าการขาย', column: 'TAR_AMT' },
-    { columnName: 'ยอดขาย', column: 'SALE_AMT' },
-    { columnName: 'ยอดเก็บ', column: 'PAY_AMT' },
-    { columnName: 'ขาด/เกิน', column: 'DIF_TAR_AMT' },
-    { columnName: 'PDO เพิ่ม/ลด', column: 'PDO_LOSS_GAIN' }]
+  { columnName: 'เป้าการขาย', column: 'TAR_AMT' },
+  { columnName: 'ยอดขาย', column: 'SALE_AMT' },
+  { columnName: 'ยอดเก็บ', column: 'PAY_AMT' },
+  { columnName: 'ขาด/เกิน', column: 'DIF_TAR_AMT' },
+  { columnName: 'PDO เพิ่ม/ลด', column: 'PDO_LOSS_GAIN' }]
   const orderBy = sortOption.filter(obj => obj.columnName === sort)[0]
   return new Promise((resolve, reject) => {
     try {
@@ -346,7 +377,7 @@ export function getPathSaleInfo2 (brh, startDate, endDate, sort = 'สายบ�
   })
 }
 
-function oracleExecute (sqlstatement) {
+function oracleExecute(sqlstatement) {
   return new Promise((resolve, reject) => {
     oracledb.getConnection(constants.database.oracle.production, (err, connection) => {
       if (err) return reject(err)
