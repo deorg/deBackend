@@ -16,7 +16,7 @@ export function getAllBranch (req, res, next) {
 
 export function getCustomter (req, res, next) {
   getCustomerProfile(req.query.id).then((resCust) => {
-    res.send(resCust)
+    res.send(resCust[0])
   }).catch((err) => {
     res.status(500).json({
       status: 'FAILURE',
