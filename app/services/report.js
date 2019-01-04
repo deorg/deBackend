@@ -377,6 +377,229 @@ export function getPathSaleInfo2(brh, startDate, endDate, sort = 'สายบ�
   })
 }
 
+export function getTarAmtBrh(year, sort = 'สาขา/สายบริการ', filter = [], pBranch) {
+  sort = sort === '%' ? 'สาขา/สายบริการ' : sort
+  var slice = filter.split(',')
+  console.log(year)
+  console.log(slice)
+  const sortOption = [
+    { columnName: 'สาขา/สายบริการ', column: 'BRH_ID' },
+    { columnName: 'เป้าการขาย', column: 'TAR_SALE_AMT' },
+    { columnName: 'ยอดขายปี ' + year, column: 'PSALE_AMT' }
+  ]
+  const orderBy = sortOption.filter(obj => obj.columnName === sort)[0]
+  return new Promise((resolve, reject) => {
+    try {
+      let sqlstatement
+      if (pBranch === '%') {
+        sqlstatement = `SELECT
+        BRH_ID, 
+        SUM(PSALE_AMT) PSALE_AMT,
+        SUM(TAR_SALE_AMT) TAR_SALE_AMT    
+     FROM
+        SA032
+     WHERE
+        TAR_YY = TRUNC(TO_DATE('${year}','YYYY'),'YY') 
+     GROUP BY
+        TAR_YY,
+        BRH_ID
+     ORDER BY
+        ${orderBy.column}`
+      } else {
+        sqlstatement = `SELECT
+        PATH_NO || ' ' || PMAS.PATH_NAME('${pBranch}', PATH_NO) BRH_ID, 
+        SUM(PSALE_AMT) PSALE_AMT,
+        SUM(TAR_SALE_AMT) TAR_SALE_AMT    
+     FROM
+        SA033
+     WHERE
+        TAR_MM = TO_DATE('01${year}','MMYYYY') AND BRH_ID = ${pBranch}
+     GROUP BY
+        TAR_MM,
+        PATH_NO
+     ORDER BY
+     ${orderBy.column}`
+      }
+      oracleExecute(sqlstatement).then((resSale) => {
+        console.log(resSale)
+        let data = []
+        let columnData = []
+        let masterColumn = []
+        resSale.forEach(element => masterColumn.push(element.BRH_ID))
+        if (slice.length > 0) {
+          slice.forEach(element => {
+            resSale = resSale.filter(e => e.BRH_ID !== element)
+          })
+        }
+        resSale.forEach(element => columnData.push(element.BRH_ID))
+        data.push({
+          columnName: 'สาขา/สายบริการ',
+          data: columnData,
+          hidden: false
+        })
+        columnData = []
+        resSale.forEach(element => columnData.push(element.PSALE_AMT))
+        data.push({
+          columnName: 'ยอดขายปี ' + year,
+          data: columnData,
+          hidden: false
+        })
+        columnData = []
+        resSale.forEach(element => columnData.push(element.TAR_SALE_AMT))
+        data.push({
+          columnName: 'เป้าการขาย',
+          data: columnData,
+          hidden: false
+        })
+        let result = {
+          status: 'SUCCESS',
+          title: 'เป้าการขาย',
+          masterColumn: masterColumn,
+          data: data
+        }
+        resolve(result)
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+function toDate(selector) {
+  var from = selector.split("-")
+  return new Date(from[2], from[1] - 1, from[0])
+}
+
+export function getPayAMT(startDate, endDate, sort = 'ทีมติดตาม', filter = []) {
+  console.log(startDate);
+  console.log(endDate)
+  let m1 = startDate.split('-')
+  let m2 = endDate.split('-')
+  let startStr = m1[2].substring(2,4)+m1[1]
+  let endStr = m2[2].substring(2,4)+m2[1]
+  // let startMonth = toDate(startDate)
+  // let endMonth = toDate(endDate)
+  // let startStr = startMonth.getFullYear().toString().substring(2,4)+(startMonth.getMonth()+1).toString()
+  // let endStr = endMonth.getFullYear().toString().substring(2,4)+(endMonth.getMonth()+1).toString()
+  sort = sort === '%' ? 'ทีมติดตาม' : sort
+  var slice = filter.split(',')
+  // console.log(sort)
+  // console.log(slice)
+  // const sortOption = [
+  //   { columnName: 'ทีมติดตาม', column: 'PATH_NO' },
+  //   { columnName: 'เดือน', column: 'MDATE' },
+  //   { columnName: 'ยอดเก็บเดือน ' + months[currentDate.getMonth()], column: 'PAY_AMT' },
+  //   { columnName: 'ยอดเก็บเดือน ' + months[lastDate.getMonth()], column: 'PAY_AMT2' }
+  // ]
+  // const orderBy = sortOption.filter(obj => obj.columnName === sort)[0]
+  return new Promise((resolve, reject) => {
+    try {
+      let sqlstatement = `SELECT * FROM 
+      (
+      SELECT 
+         PATH_NO ทีมติดตาม, 
+         TO_CHAR(MDATE,'YYMM') MM, 
+         SUM(PAY_AMT) PAY_AMT
+      FROM   SA010V 
+      WHERE  BRH_ID = '66' 
+        AND  MDATE BETWEEN  TRUNC(TO_DATE('${startDate}','DD/MM/RRRR'),'MM') AND TRUNC(TO_DATE('${endDate}','DD/MM/RRRR'),'MM')
+      GROUP BY 
+             PATH_NO, MDATE
+      )
+      PIVOT 
+      (
+      SUM(PAY_AMT) FOR MM IN ('${startStr}', '${endStr}')
+      ) order by to_number(${sort})`
+      oracleExecute(sqlstatement).then((resSale) => {
+        console.log(resSale)
+        let column = []
+        column = Object.keys(resSale[0])
+        let data = []
+        let columnData = []
+        let masterColumn = []
+        resSale.forEach(element => masterColumn.push(element[column[0]]))
+        if (slice.length > 0) {
+          slice.forEach(element => {
+            resSale = resSale.filter(e => e[column[0]] !== element)
+          })
+        }
+        for (let i = 0; i < column.length; i++) {
+          columnData = []
+          resSale.forEach(element => columnData.push(element[column[i]]))
+          data.push({
+            columnName: column[i],
+            data: columnData,
+            hidden: false
+          })
+        }
+        // resSale.forEach(element => columnData.push(element[column[1]]))
+        // data.push({
+        //   columnName: column[1],
+        //   data: columnData,
+        //   hidden: false
+        // })
+        // columnData = []
+        // resSale.forEach(element => columnData.push(element[column[2]]))
+        // data.push({
+        //   columnName: column[2],
+        //   data: columnData,
+        //   hidden: false
+        // })
+        // columnData = []
+        // resSale.forEach(element => columnData.push(element[column[3]]))
+        // data.push({
+        //   columnName: column[3],
+        //   data: columnData,
+        //   hidden: false
+        // })
+        // columnData = []
+        // resSale.forEach(element => columnData.push(element[column[4]]))
+        // data.push({
+        //   columnName: column[4],
+        //   data: columnData,
+        //   hidden: false
+        // })
+        // resSale.forEach(element => columnData.push(element.PATH_NO))
+        // data.push({
+        //   columnName: 'ทีมติดตาม',
+        //   data: columnData,
+        //   hidden: false
+        // })
+        // columnData = []
+        // resSale.forEach(element => columnData.push(element.MDATE))
+        // data.push({
+        //   columnName: 'เดือน',
+        //   data: columnData,
+        //   hidden: false
+        // })
+        // columnData = []
+        // resSale.forEach(element => columnData.push(element.11))
+        // data.push({
+        //   columnName: 'ยอดเก็บเดือน ' + months[currentDate.getMonth()],
+        //   data: columnData,
+        //   hidden: false
+        // })
+        // columnData = []
+        // resSale.forEach(element => columnData.push(element.12))
+        // data.push({
+        //   columnName: 'ยอดเก็บเดือน ' + months[lastDate.getMonth()],
+        //   data: columnData,
+        //   hidden: false
+        // })
+        let result = {
+          status: 'SUCCESS',
+          title: 'ยอดเก็บทีมติดตาม',
+          masterColumn: masterColumn,
+          data: data
+        }
+        resolve(result)
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
 function oracleExecute(sqlstatement) {
   return new Promise((resolve, reject) => {
     oracledb.getConnection(constants.database.oracle.production, (err, connection) => {

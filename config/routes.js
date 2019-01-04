@@ -1,5 +1,5 @@
 import { createUser, getAllUser, updateUserData, deleteUser, signInUser } from '../app/controllers/authorization'
-import { getAllBranch, getSaleInfo, getMonthlyMeeting, getPathInfo, getSaleInfo2, getPathInfo2, getCustomter, getSms } from '../app/controllers/information'
+import { getAllBranch, getSaleInfo, getMonthlyMeeting, getPathInfo, getSaleInfo2, getPathInfo2, getCustomter, getSms, getTarAmt, getPayReport } from '../app/controllers/information'
 import { createNews, getNews, newCatetory, getCategory, deleteNews, deleteImg, editNews } from '../app/controllers/newsController'
 // import { newAlbum } from '../app/controllers/imageController'
 
@@ -36,6 +36,9 @@ module.exports = function (app, passport) {
   app.get('/api/information/getMonthlyMeeting', getMonthlyMeeting)
   app.get('/api/information/getPathInfo', getPathInfo)
   app.get('/api/information/getPathInfo2', getPathInfo2)
+  app.get('/api/information/getTarAmt', getTarAmt)
+  app.get('/api/information/getPayAmt', getPayReport)
+
   app.get('/api/information/summary/last5years')
   app.get('/api/information/summary/salePerYear')
   // #endregion
