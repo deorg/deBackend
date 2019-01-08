@@ -1,6 +1,8 @@
 import { createNews as newNews, getNews as getNew, addCategory, getCate, deleteNews as delNews,
   deleteImg as delImg, updateNews } from '../services/news'
 
+import { getMenu, changeDate, changeMenu } from '../services/weekendFood'
+
 export function newCatetory (req, res, next) {
   addCategory(req.body).then((resCate) => {
     if (resCate.status === 'SUCCESS') {
@@ -115,6 +117,50 @@ export function getNews (req, res, next) {
     res.status(500).json({
       status: 'FAILURE',
       desc: err
+    })
+  })
+}
+
+// WEEKEND FOOD CONTROLLERS
+
+export function getWeekendMenu (req, res, next) {
+  getMenu().then((result) => {
+    res.json({
+      status: 'SUCCESS',
+      data: result
+    })
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+
+export function editDate (req, res, next) {
+  changeDate(req.body.date).then((result) => {
+    res.json({
+      status: 'SUCCESS',
+      data: result
+    })
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+
+export function editMenu (req, res, next) {
+  changeMenu(req.body).then((result) => {
+    res.json({
+      status: 'SUCCESS',
+      data: result
+    }).catch((err) => {
+      res.status(500).json({
+        status: 'FAILURE',
+        desc: err
+      })
     })
   })
 }
