@@ -14,7 +14,7 @@ export function getMenu () {
 
 export function changeDate (val) {
   return new Promise((resolve, reject) => {
-    menu.update({}, { $set: { date: val } }, { upsert: false }, (err, docs) => {
+    menu.update({}, { $set: { date: new Date(val) } }, { upsert: false }, (err, docs) => {
       if (err) {
         return reject(err)
       } else {
@@ -27,6 +27,18 @@ export function changeDate (val) {
 export function changeMenu (val) {
   return new Promise((resolve, reject) => {
     menu.updateMany({}, { $push: { 'menu': val } }, (err, docs) => {
+      if (err) {
+        return reject(err)
+      } else {
+        return resolve(docs)
+      }
+    })
+  })
+}
+
+export function deleteMenu () {
+  return new Promise((resolve, reject) => {
+    menu.update({}, { $set: { menu: [] } }, (err, docs) => {
       if (err) {
         return reject(err)
       } else {

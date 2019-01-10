@@ -71,7 +71,6 @@ export function getPathInfo2 (req, res, next) {
   })
 }
 
-
 export function getPayReport (req, res, next) {
   getPayAMT(req.query.startDate, req.query.endDate, req.query.sort, req.query.filter).then((resSale) => {
     res.send(resSale)
@@ -94,8 +93,6 @@ export function getTarAmt (req, res, next) {
     })
   })
 }
-
-
 
 export function getSaleInfo (req, res, next) {
   getSale(req.query.startDate, req.query.endDate).then((resSale) => {

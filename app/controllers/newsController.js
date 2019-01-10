@@ -1,7 +1,7 @@
 import { createNews as newNews, getNews as getNew, addCategory, getCate, deleteNews as delNews,
   deleteImg as delImg, updateNews } from '../services/news'
 
-import { getMenu, changeDate, changeMenu } from '../services/weekendFood'
+import { getMenu, changeDate, changeMenu, deleteMenu } from '../services/weekendFood'
 
 export function newCatetory (req, res, next) {
   addCategory(req.body).then((resCate) => {
@@ -156,6 +156,20 @@ export function editMenu (req, res, next) {
     res.json({
       status: 'SUCCESS',
       data: result
+    }).catch((err) => {
+      res.status(500).json({
+        status: 'FAILURE',
+        desc: err
+      })
+    })
+  })
+}
+
+export function clearMenu (req, res, next) {
+  deleteMenu().then((result) => {
+    res.json({
+      status: 'SUCCESS',
+      dat5a: result
     }).catch((err) => {
       res.status(500).json({
         status: 'FAILURE',
