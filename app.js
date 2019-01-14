@@ -12,6 +12,9 @@ import _passport from './config/passport'
 import cors from 'cors'
 import path from 'path'
 
+global.__basedir = __dirname
+
+var publicDir = require('path').join(__dirname, '/assets/gallery')
 var port = process.env.PORT || 8042
 var app = express()
 app.use(json({ limit: '50mb', extended: true }))
@@ -24,6 +27,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use(cors())
+app.use('/pics', express.static(publicDir))
 
 /** *************Mongodb configuratrion********************/
 

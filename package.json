@@ -18,7 +18,7 @@
     "express": "~4.13.1",
     "express-mailer": "^0.3.0",
     "express-session": "latest",
-    "fs-extra": "latest",
+    "fs-extra": "^7.0.1",
     "fs-path": "0.0.24",
     "guid": "0.0.12",
     "http-proxy": "latest",
@@ -26,7 +26,6 @@
     "mime": "latest",
     "mongoose": "latest",
     "morgan": "~1.6.1",
-    "multer": "latest",
     "mysql": "latest",
     "node-constants": "latest",
     "nodemailer": "^2.4.1",
@@ -52,7 +51,8 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-standard": "^4.0.0",
+    "multer": "^1.4.1"
   },
   "scripts": {
     "server": "babel-watch app",
