@@ -14,6 +14,7 @@ import path from 'path'
 
 global.__basedir = __dirname
 
+const bodyParser = require('body-parser')
 var publicDir = require('path').join(__dirname, '/assets/gallery')
 var port = process.env.PORT || 8042
 var app = express()
@@ -28,6 +29,12 @@ app.use((req, res, next) => {
 })
 app.use(cors())
 app.use('/pics', express.static(publicDir))
+
+// parse application/json
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
 
 /** *************Mongodb configuratrion********************/
 

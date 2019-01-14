@@ -1,7 +1,7 @@
 import { createUser, getAllUser, updateUserData, deleteUser, signInUser } from '../app/controllers/authorization'
 import { getAllBranch, getSaleInfo, getMonthlyMeeting, getPathInfo, getSaleInfo2, getPathInfo2, getCustomter, getSms, getTarAmt, getPayReport } from '../app/controllers/information'
 import { createNews, getNews, newCatetory, getCategory, deleteNews, deleteImg, editNews, getWeekendMenu, editDate, editMenu, clearMenu } from '../app/controllers/newsController'
-import { newGallery } from '../app/controllers/galleryController'
+import { newGallery, addImage, removePic, removeGallery, getAlbums } from '../app/controllers/galleryController'
 // import { newAlbum } from '../app/controllers/imageController'
 
 module.exports = function (app, passport) {
@@ -58,5 +58,9 @@ module.exports = function (app, passport) {
 
   // #region API for get Weekend Menu Management
   app.post('/api/gallery/addAlbum', newGallery)
+  app.post('/api/gallery/addImage', addImage)
+  app.post('/api/gallery/deleteImg', removePic)
+  app.post('/api/gallery/deleteAlbum', removeGallery)
+  app.get('/api/gallery/data', getAlbums)
   // #endregion
 }

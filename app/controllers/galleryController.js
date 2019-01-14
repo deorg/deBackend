@@ -1,6 +1,7 @@
-import { createAlbum } from '../services/gallery'
+import { createAlbum, oldAlbum, deletePic, deleteGallery, getData } from '../services/gallery'
 
 const newUpload = require('../../config/gallery.multer')
+const oldUpload = require('../../config/oldGallery.multer')
 
 export function newGallery (req, res) {
   newUpload.any()(req, res, function () {
@@ -15,6 +16,65 @@ export function newGallery (req, res) {
         status: 'FAILURE',
         desc: err
       })
+    })
+  })
+}
+
+export function addImage (req, res) {
+  oldUpload.any()(req, res, function () {
+    oldAlbum(req.body.name, req.files).then((result) => {
+      res.json({
+        status: 'SUCCESS',
+        insert: result
+      }).catch((err) => {
+        res.status(500).json({
+          status: 'FAILURE',
+          desc: err
+        })
+      })
+    })
+  })
+}
+
+export function removePic (req, res) {
+  console.log(req.body, 'aaaaaaaa')
+  deletePic(req.body.name, req.body.filename).then((result) => {
+    res.json({
+      status: 'SUCCESS',
+      insert: result
+    })
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+
+export function removeGallery (req, res) {
+  deleteGallery(req.body.name).then((result) => {
+    res.json({
+      status: 'SUCCESS',
+      insert: result
+    })
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
+    })
+  })
+}
+
+export function getAlbums (req, res) {
+  getData().then((result) => {
+    res.json({
+      status: 'SUCCESS',
+      data: result
+    })
+  }).catch((err) => {
+    res.status(500).json({
+      status: 'FAILURE',
+      desc: err
     })
   })
 }
