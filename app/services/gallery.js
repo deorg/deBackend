@@ -3,6 +3,7 @@
 import Album from '../models/m_album'
 
 const fs = require('fs-extra')
+const mongodb = require('mongodb')
 
 export function createAlbum (val1, val2) {
   return new Promise((resolve, reject) => {
@@ -34,13 +35,14 @@ export function oldAlbum (val1, val2) {
   })
 }
 
-export function deletePic (name, filename) {
+export function deletePic (name, filename, _id) {
   return new Promise((resolve, reject) => {
     console.log(name)
     console.log(filename)
+    console.log(_id)
     // eslint-disable-next-line no-undef
     fs.remove(__basedir + `/assets/gallery/${name}/${filename}`).then(() => {
-      Album.update({ 'name': name }, { $pull: { 'file': { 'filename': filename } } }, (err, docs) => {
+      Album.remove({ _id: new mongodb.ObjectID(`${_id}`) }, (err, docs) => {
         if (err) {
           return reject(err)
         } else {
@@ -56,7 +58,7 @@ export function deletePic (name, filename) {
 export function deleteGallery (name) {
   return new Promise((resolve, reject) => {
     fs.remove(__basedir + `/assets/gallery/${name}`).then(() => {
-      Album.remove({ 'name': name }, (err, docs) => {
+      Album.deleteMany({ 'name': name }, (err, docs) => {
         if (err) {
           return reject(err)
         } else {

@@ -38,7 +38,7 @@ export function addImage (req, res) {
 
 export function removePic (req, res) {
   console.log(req.body, 'aaaaaaaa')
-  deletePic(req.body.name, req.body.filename).then((result) => {
+  deletePic(req.body.name, req.body.filename, req.body._id).then((result) => {
     res.json({
       status: 'SUCCESS',
       insert: result
